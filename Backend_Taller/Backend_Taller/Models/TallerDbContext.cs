@@ -13,6 +13,7 @@ namespace Backend_Taller.Models
         public DbSet<OrdenServicio> OrdenesServicio { get; set; }
         public DbSet<Servicios> Servicios { get; set; }
         public DbSet<Presupuestos> Presupuestos { get; set; }
+        public DbSet<Marcas> Marcas { get; set; }
         public DbSet<Iva> Iva { get; set; }
     }
 }
