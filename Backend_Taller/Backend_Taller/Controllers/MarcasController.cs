@@ -1,4 +1,5 @@
-﻿using Backend_Taller.Models;
+﻿using Backend_Taller.DTOs;
+using Backend_Taller.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,16 @@ namespace Backend_Taller.Controllers
         {
             var marcas = _context.Marcas.ToList();
             return Ok(marcas);
+        }
+
+        [HttpPost]
+        public IActionResult CreateMarca([FromBody] MarcaDTO marcaNueva)
+        {
+            Marcas marca = new Marcas();
+            marca.NombreMarca = marcaNueva.NombreMarca;
+            _context.Marcas.Add(marca);
+            _context.SaveChanges();
+            return Ok(marca);
         }
     }
 }
