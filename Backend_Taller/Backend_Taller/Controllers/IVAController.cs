@@ -1,5 +1,6 @@
 ﻿using Backend_Taller.DTOs;
 using Backend_Taller.Models;
+using Backend_Taller.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,35 +11,24 @@ namespace Backend_Taller.Controllers
     [ApiController]
     public class IVAController : ControllerBase
     {
-        private readonly TallerDbContext _context;
-        public IVAController(TallerDbContext context)
+        private readonly IIvaService _ivaService;
+        public IVAController(IIvaService ivaService)
         {
-            _context = context;
+            _ivaService = ivaService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetIVA()
+        public async Task<IActionResult> ObtenerIVA()
         {
-            var iva = await _context.Iva.FirstOrDefaultAsync();
-            if (iva == null)
-            {
-                return NotFound();
-            }
+            var iva = await _ivaService.ObtenerIvaValue();
+
             return Ok(iva);
         }
 
         [HttpPut]
-        public async Task<IActionResult> ModifyIva([FromBody] IvaDTO nuevoIva)
+        public async Task<IActionResult> ModificarIva([FromBody] IvaDTO nuevoIva)
         {
-            var iva = await _context.Iva.SingleOrDefaultAsync();
-
-            if(iva == null)
-            {
-                return NotFound();
-            }
-
-            iva.IvaValue = nuevoIva.IvaValue;
-            await _context.SaveChangesAsync();
+            var iva = await _ivaService.ModificarIva(nuevoIva);
             return Ok(iva);
         }
     }

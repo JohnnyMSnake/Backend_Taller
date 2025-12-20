@@ -1,17 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend_Taller.Models
+namespace Backend_Taller.DTOs
 {
-    [Index(nameof(Placas))]
-    public class Vehiculos
+    public class VehiculosDTO
     {
         public int VehiculosId { get; set; }
         [MaxLength(100)]
-        public string NumeroSerie { get; set; }
+        public string? NumeroSerie { get; set; }
         [Required]
         [MaxLength(20)]
-        public string? Placas { get; set; }
+        public string Placas { get; set; }
         [MaxLength(50)]
         public string? Tipo { get; set; }
         [Required]
@@ -22,9 +20,5 @@ namespace Backend_Taller.Models
         public string? NumeroMotor { get; set; }
         [MaxLength(50)]
         public string? Color { get; set; }
-
-        public ICollection<OrdenServicio> OrdenesServicio { get; set; }
-
-        public Marcas Marca { get; set; }
     }
 }

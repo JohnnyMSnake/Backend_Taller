@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend_Taller.Models
+namespace Backend_Taller.DTOs
 {
-    public class RfcMoral
+    public class RfcMoralDTO
     {
         public int RfcMoralId { get; set; }
         [Required]
@@ -11,8 +11,5 @@ namespace Backend_Taller.Models
         [Required]
         [MaxLength(200)]
         public string Institucion { get; set; }
-
-        public ICollection<OrdenServicio> OrdenesServicio { get; set; }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using Backend_Taller.Models;
+﻿using Backend_Taller.DTOs;
+using Backend_Taller.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,14 +36,14 @@ namespace Backend_Taller.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateOrdenServicio([FromBody] OrdenServicio nuevaOrdenServicio)
+        public IActionResult CreateOrdenServicio([FromBody] CrearOrdenServicioDTO nuevaOrdenServicio)
         {
             //Solo para verificar que si tenga los datos necesarios antes de proceder
             if (nuevaOrdenServicio.Cliente == null || 
                 nuevaOrdenServicio.Vehiculo == null || 
                 nuevaOrdenServicio.Presupuesto == null)
             {
-                return BadRequest("Alguno de los datos a subir no estan completos.");
+                return BadRequest("Alguno de los datos a subir no estan completos, favor de no mandar null ya sea el cliente, vehiculo o el presupuesto");
             }
 
             using (var transaccion = _context.Database.BeginTransaction())
@@ -118,9 +119,9 @@ namespace Backend_Taller.Controllers
                     if (nuevaOrdenServicio.RfcMoral != null)
                     {
                         //Finalmente, hara lo mismo para el RFC Moral
-                        if (nuevaOrdenServicio.RfcMoralId > 0)
+                        if (nuevaOrdenServicio.RfcMoral.RfcMoralId > 0)
                         {
-                            rfcMoral = _context.RfcMorales.Find(nuevaOrdenServicio.RfcMoralId);
+                            rfcMoral = _context.RfcMorales.Find(nuevaOrdenServicio.RfcMoral.RfcMoralId);
                         }
                         //si no existe, creara uno nuevo
                         if (rfcMoral == null)
@@ -150,13 +151,36 @@ namespace Backend_Taller.Controllers
                         Kilometraje = nuevaOrdenServicio.Kilometraje,
                         Observaciones = nuevaOrdenServicio.Observaciones,
                         FechaEntrada = DateTime.Now,
-                        Servicios = nuevaOrdenServicio.Servicios
+                        Servicios = new List<Servicios>()
                     };
+
+                    foreach (var servicio in nuevaOrdenServicio.Servicios)
+                    {
+                        var nuevoServicio = new Servicios
+                        {
+                            Descripcion = servicio.Descripcion,
+                            Clave = servicio.Clave,
+                            Numero = servicio.Numero
+                        };
+                        ordenServicio.Servicios.Add(nuevoServicio);
+                    }
                     _context.OrdenesServicio.Add(ordenServicio);
 
-                    
-                    var presupuesto = nuevaOrdenServicio.Presupuesto;
-                    presupuesto.OrdenServicio = ordenServicio;
+                    //Esta parted deberia de crearle un service para que verifique que lo que manda el front tenga sentido 
+                    var presupuesto = new Presupuestos()
+                    { 
+                        ManoObra = nuevaOrdenServicio.Presupuesto.ManoObra,
+                        Refacciones = nuevaOrdenServicio.Presupuesto.Refacciones,
+                        OtrosMateriales = nuevaOrdenServicio.Presupuesto.OtrosMateriales,
+                        CargosAdicionales = nuevaOrdenServicio.Presupuesto.CargosAdicionales,
+                        Seguro = nuevaOrdenServicio.Presupuesto.Seguro,
+                        IVA = nuevaOrdenServicio.Presupuesto.IVA,
+                        Subtotal = nuevaOrdenServicio.Presupuesto.Subtotal,
+                        Total = nuevaOrdenServicio.Presupuesto.Total,
+                        Anticipo = nuevaOrdenServicio.Presupuesto.Anticipo,
+                        Resta = nuevaOrdenServicio.Presupuesto.Resta,
+                        OrdenServicio = ordenServicio
+                    };
 
                     _context.Presupuestos.Add(presupuesto);
                     _context.SaveChanges();

@@ -1,16 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend_Taller.Models
+namespace Backend_Taller.DTOs
 {
-    [Index(nameof(Nombre))]
-    public class Clientes
+    public class ClientesDTO
     {
         public int ClientesId { get; set; }
         [MaxLength(20)]
         public string? RfcFisico { get; set; }
-        [MaxLength(200)]
         [Required]
+        [MaxLength(200)]
         public string Nombre { get; set; }
         [MaxLength(200)]
         public string? Direccion { get; set; }
@@ -20,7 +18,5 @@ namespace Backend_Taller.Models
         [Required]
         [Phone]
         public string Telefono { get; set; }
-
-        public ICollection<OrdenServicio> OrdenesServicio { get; set; }
     }
 }

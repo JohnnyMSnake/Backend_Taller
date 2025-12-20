@@ -1,5 +1,6 @@
 ﻿using Backend_Taller.DTOs;
 using Backend_Taller.Models;
+using Backend_Taller.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,26 +10,23 @@ namespace Backend_Taller.Controllers
     [ApiController]
     public class MarcasController : ControllerBase
     {
-        private readonly TallerDbContext _context;
-        public MarcasController(TallerDbContext context)
+        private readonly IMarcaService _marcaService;
+        public MarcasController(IMarcaService marcaService)
         {
-            _context = context;
+            _marcaService = marcaService;
         }
 
         [HttpGet]
-        public IActionResult GetMarcas()
+        public async Task<IActionResult> ObtenerMarcas()
         {
-            var marcas = _context.Marcas.ToList();
+            var marcas = await _marcaService.ObtenerMarcas();
             return Ok(marcas);
         }
 
         [HttpPost]
-        public IActionResult CreateMarca([FromBody] MarcaDTO marcaNueva)
+        public async Task<IActionResult> CrearMarca([FromBody] MarcaDTO marcaNueva)
         {
-            Marcas marca = new Marcas();
-            marca.NombreMarca = marcaNueva.NombreMarca;
-            _context.Marcas.Add(marca);
-            _context.SaveChanges();
+            var marca = await _marcaService.CrearMarca(marcaNueva);
             return Ok(marca);
         }
     }

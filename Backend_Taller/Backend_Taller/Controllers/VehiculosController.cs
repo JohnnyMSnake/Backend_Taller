@@ -1,4 +1,5 @@
 ﻿using Backend_Taller.Models;
+using Backend_Taller.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,17 +9,33 @@ namespace Backend_Taller.Controllers
     [ApiController]
     public class VehiculosController : ControllerBase
     {
-        private readonly TallerDbContext _context;
-        public VehiculosController(TallerDbContext context)
+        private readonly IVehiculoService _vehiculoService;
+        public VehiculosController(IVehiculoService vehiculoService)
         {
-            _context = context;
+            _vehiculoService = vehiculoService;
         }
 
         [HttpGet]
-        public IActionResult GetVehiculos()
+        public async Task<IActionResult> ObtenerVehiculos()
         {
-            var vehiculos = _context.Vehiculos.ToList();
+            var vehiculos = await _vehiculoService.ObtenerVehiculos();
             return Ok(vehiculos);
         }
+
+        [HttpGet("Search")]
+        public async Task<IActionResult> BuscarVehiculos(string? numeroSerie,  
+                                        string? placas, 
+                                        string? tipo,
+                                        int? marcaId,
+                                        string? modelo,
+                                        string? numeroMotor,
+                                        string? color)
+        {
+            
+            var vehiculos = await _vehiculoService.BuscarVehiculos(numeroSerie, placas, tipo, marcaId, modelo, numeroMotor, color);
+
+            return Ok(vehiculos);
+        }
+
     }
 }

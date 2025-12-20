@@ -4,6 +4,7 @@ using Backend_Taller.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend_Taller.Migrations
 {
     [DbContext(typeof(TallerDbContext))]
-    partial class TallerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214001434_modificacionDeNulls")]
+    partial class modificacionDeNulls
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,30 +34,23 @@ namespace Backend_Taller.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClientesId"));
 
                     b.Property<string>("Cp")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Direccion")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RfcFisico")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ClientesId");
-
-                    b.HasIndex("Nombre");
 
                     b.ToTable("Clientes");
                 });
@@ -68,7 +64,7 @@ namespace Backend_Taller.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IvaId"));
 
                     b.Property<decimal>("IvaValue")
-                        .HasColumnType("decimal(4,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IvaId");
 
@@ -85,8 +81,7 @@ namespace Backend_Taller.Migrations
 
                     b.Property<string>("NombreMarca")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MarcasId");
 
@@ -111,8 +106,7 @@ namespace Backend_Taller.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Observaciones")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RfcMoralId")
                         .HasColumnType("int");
@@ -190,13 +184,11 @@ namespace Backend_Taller.Migrations
 
                     b.Property<string>("Institucion")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RfcMoralValue")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RfcMoralId");
 
@@ -216,8 +208,7 @@ namespace Backend_Taller.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Numero")
                         .HasColumnType("int");
@@ -241,38 +232,30 @@ namespace Backend_Taller.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehiculosId"));
 
                     b.Property<string>("Color")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MarcasId")
                         .HasColumnType("int");
 
                     b.Property<string>("Modelo")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NumeroMotor")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NumeroSerie")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Placas")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Tipo")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("VehiculosId");
 
                     b.HasIndex("MarcasId");
-
-                    b.HasIndex("Placas");
 
                     b.ToTable("Vehiculos");
                 });

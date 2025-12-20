@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend_Taller.Models
+namespace Backend_Taller.DTOs
 {
-    public class Presupuestos
+    public class PresupuestosDTO
     {
-        public int PresupuestosId { get; set; }
-        public int OrdenServicioId { get; set; }
         [Range(0, double.MaxValue)]
         public decimal? ManoObra { get; set; }
         [Range(0, double.MaxValue)]
@@ -26,6 +24,5 @@ namespace Backend_Taller.Models
         public decimal? Anticipo { get; set; }
         [Range(0, double.MaxValue)]
         public decimal? Resta { get; set; }
-        public OrdenServicio OrdenServicio { get; set; }
     }
 }
