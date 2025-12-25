@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Backend_Taller.Models
 {
@@ -22,9 +23,7 @@ namespace Backend_Taller.Models
         public string? NumeroMotor { get; set; }
         [MaxLength(50)]
         public string? Color { get; set; }
-
         public ICollection<OrdenServicio> OrdenesServicio { get; set; }
-
         public Marcas Marca { get; set; }
     }
 }

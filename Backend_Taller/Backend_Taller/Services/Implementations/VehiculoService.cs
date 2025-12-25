@@ -13,7 +13,7 @@ namespace Backend_Taller.Services.Implementations
         }
         public async Task<List<Vehiculos>> BuscarVehiculos(string? numeroSerie, string? placas, string? tipo, int? marcaId, string? modelo, string? numeroMotor, string? color)
         {
-            var query = _context.Vehiculos.AsQueryable();
+            var query = _context.Vehiculos.Include(M => M.Marca).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(numeroSerie))
             {
@@ -51,7 +51,7 @@ namespace Backend_Taller.Services.Implementations
 
         public async Task<List<Vehiculos>> ObtenerVehiculos()
         {
-            var vehiculos = await _context.Vehiculos.ToListAsync();
+            var vehiculos = await _context.Vehiculos.Include(M => M.Marca).ToListAsync();
             return vehiculos;
         }
     }

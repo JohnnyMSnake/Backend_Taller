@@ -7,8 +7,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
+//Ademas de indicarq ue trabajara con controladores, se agrega la opcion para evitar ciclos en las referencias JSON
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -27,6 +30,8 @@ builder.Services.AddScoped<IVehiculoService, VehiculoService>();
 builder.Services.AddScoped<IRfcMoralService, RfcMoralService>();
 builder.Services.AddScoped<IIvaService, IvaService>();
 builder.Services.AddScoped<IMarcaService, MarcaService>();
+builder.Services.AddScoped<IPresupuestoService, PresupuestoService>();
+builder.Services.AddScoped<ICrearOrdenService, CrearOrdenService>();
 
 var app = builder.Build();
 

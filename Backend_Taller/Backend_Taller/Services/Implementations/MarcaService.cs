@@ -14,13 +14,19 @@ namespace Backend_Taller.Services.Implementations
         }
         public async Task<Marcas> CrearMarca(MarcaDTO marcaNueva)
         {
-            var marca = new Marcas();
-            marca.NombreMarca = marcaNueva.NombreMarca;
+            //verificar si la maraca a agregar ya existe
+            var verificarMarca = await _context.Marcas.FirstOrDefaultAsync(m => m.NombreMarca.ToLower() == marcaNueva.NombreMarca.ToLower());
+            if (verificarMarca == null)
+            {
+                var marca = new Marcas();
+                marca.NombreMarca = marcaNueva.NombreMarca;
 
-            await _context.Marcas.AddAsync(marca);
-            await _context.SaveChangesAsync();
-
-            return(marca);
+                await _context.Marcas.AddAsync(marca);
+                await _context.SaveChangesAsync();
+                return (marca);
+            }
+            // Si la marca ya existe, devolver la marca existente
+            return (verificarMarca);
         }
 
         public async Task<List<Marcas>> ObtenerMarcas()

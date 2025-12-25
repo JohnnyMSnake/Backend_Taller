@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Backend_Taller.Models
 {
+    [Index(nameof(Institucion))]
     public class RfcMoral
     {
         public int RfcMoralId { get; set; }
