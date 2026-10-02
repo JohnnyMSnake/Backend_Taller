@@ -5,15 +5,58 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Taller.Services.Implementations
 {
-    public class CrearOrdenService : ICrearOrdenService
+    public class OrdenService : IOrdenService
     {
         private readonly IPresupuestoService _presupuestoService;
         private readonly TallerDbContext _context;
-        public CrearOrdenService(TallerDbContext context, IPresupuestoService presupuestoSevice) 
+        public OrdenService(TallerDbContext context, IPresupuestoService presupuestoSevice) 
         { 
             _presupuestoService = presupuestoSevice;
             _context = context;
         }
+
+        public async Task<List<OrdenServicio>> BuscarOrden(int? ordenServicioId, string? nombre, string? telefono, string? rfcFisico, string? placas, string? numeroSerie)
+        {
+
+            var query = _context.OrdenesServicio.AsQueryable();
+
+            query = query.Include(v => v.Vehiculo)
+                         .ThenInclude(m => m.Marca)
+                         .Include(c => c.Cliente)
+                         .Include(rfc => rfc.RfcMoral)
+                         .Include(p => p.Presupuesto)
+                         .Include(s => s.Servicios);
+
+            if (ordenServicioId.HasValue && ordenServicioId > 0)
+            {
+                query = query.Where(id => id.OrdenServicioId == ordenServicioId);
+            }
+            if (!string.IsNullOrWhiteSpace(nombre))
+            {
+                query = query.Where(n => n.Cliente.Nombre.StartsWith(nombre));
+            }
+            if (!string.IsNullOrWhiteSpace(telefono))
+            {
+                query = query.Where(n => n.Cliente.Telefono.Contains(telefono));
+            }
+            if (!string.IsNullOrWhiteSpace(rfcFisico))
+            {
+                query = query.Where(rfc => rfc.Cliente.RfcFisico.Contains(rfcFisico));
+            }
+            if (!string.IsNullOrWhiteSpace(placas))
+            {
+                query = query.Where(p => p.Vehiculo.Placas.StartsWith(placas));
+            }
+            if (!string.IsNullOrWhiteSpace(numeroSerie))
+            {
+                query = query.Where(ns => ns.Vehiculo.NumeroSerie.Contains(numeroSerie));
+            }
+
+            var ordenesServicio = await query.ToListAsync();
+
+            return ordenesServicio;
+        }
+
         public async Task<CrearOrdenServicioDTO> CrearOrden(CrearOrdenServicioDTO nuevaOrdenServicio)
         {
             //Solo para verificar que si tenga los datos necesarios antes de proceder

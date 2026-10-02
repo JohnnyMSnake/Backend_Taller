@@ -15,5 +15,6 @@ namespace Backend_Taller.Models
         public DbSet<Presupuestos> Presupuestos { get; set; }
         public DbSet<Marcas> Marcas { get; set; }
         public DbSet<Iva> Iva { get; set; }
+        public DbSet<User> User { get; set; }
     }
 }

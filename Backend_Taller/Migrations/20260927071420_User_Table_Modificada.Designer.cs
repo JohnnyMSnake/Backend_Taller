@@ -4,6 +4,7 @@ using Backend_Taller.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend_Taller.Migrations
 {
     [DbContext(typeof(TallerDbContext))]
-    partial class TallerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260927071420_User_Table_Modificada")]
+    partial class User_Table_Modificada
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,6 +203,8 @@ namespace Backend_Taller.Migrations
 
                     b.HasKey("RfcMoralId");
 
+                    b.HasIndex("Institucion");
+
                     b.ToTable("RfcMorales");
                 });
 
@@ -211,7 +216,7 @@ namespace Backend_Taller.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiciosId"));
 
-                    b.Property<int>("Clave")
+                    b.Property<int?>("Clave")
                         .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
@@ -219,7 +224,7 @@ namespace Backend_Taller.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("Numero")
+                    b.Property<int?>("Numero")
                         .HasColumnType("int");
 
                     b.Property<int>("OrdenServicioId")
@@ -230,6 +235,27 @@ namespace Backend_Taller.Migrations
                     b.HasIndex("OrdenServicioId");
 
                     b.ToTable("Servicios");
+                });
+
+            modelBuilder.Entity("Backend_Taller.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Backend_Taller.Models.Vehiculos", b =>
@@ -261,6 +287,7 @@ namespace Backend_Taller.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Placas")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 

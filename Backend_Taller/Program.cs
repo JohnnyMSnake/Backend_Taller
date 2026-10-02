@@ -1,3 +1,4 @@
+using Backend_Taller;
 using Backend_Taller.Models;
 using Backend_Taller.Services.Implementations;
 using Backend_Taller.Services.Interfaces;
@@ -31,7 +32,11 @@ builder.Services.AddScoped<IRfcMoralService, RfcMoralService>();
 builder.Services.AddScoped<IIvaService, IvaService>();
 builder.Services.AddScoped<IMarcaService, MarcaService>();
 builder.Services.AddScoped<IPresupuestoService, PresupuestoService>();
-builder.Services.AddScoped<ICrearOrdenService, CrearOrdenService>();
+builder.Services.AddScoped<IOrdenService, OrdenService>();
+
+builder.Services.AddExceptionHandler<ExceptionHandler>();
+
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -43,6 +48,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 

@@ -19,13 +19,13 @@ namespace Backend_Taller.Services.Implementations
             decimal totalCalculado = 0m;
             decimal restaCalculada = 0m;
 
-            subtotalCalculado = presupuesto.ManoObra.GetValueOrDefault() +
-                   presupuesto.Refacciones.GetValueOrDefault() +
-                   presupuesto.OtrosMateriales.GetValueOrDefault() +
-                   presupuesto.CargosAdicionales.GetValueOrDefault() +
-                   presupuesto.Seguro.GetValueOrDefault();
+            subtotalCalculado = presupuesto.ManoObra +
+                   presupuesto.Refacciones +
+                   presupuesto.OtrosMateriales +
+                   presupuesto.CargosAdicionales +
+                   presupuesto.Seguro;
 
-            if (presupuesto.Subtotal.GetValueOrDefault() != subtotalCalculado)
+            if (presupuesto.Subtotal != subtotalCalculado)
             {
                 return false;
             }
@@ -34,24 +34,24 @@ namespace Backend_Taller.Services.Implementations
 
             if (iva != null)
             {
-                ivaCalculado = 0m * iva.IvaValue;
+                ivaCalculado = subtotalCalculado * iva.IvaValue;
             }
 
-            if (presupuesto.IVA.GetValueOrDefault() != ivaCalculado)
+            if (presupuesto.IVA != ivaCalculado)
             {
                 return false;
             }
 
-            totalCalculado = 0m + ivaCalculado;
+            totalCalculado = subtotalCalculado + ivaCalculado;
 
-            if (presupuesto.Total.GetValueOrDefault() != totalCalculado)
+            if (presupuesto.Total != totalCalculado)
             {
                 return false;
             }
 
-            restaCalculada = totalCalculado - presupuesto.Anticipo.GetValueOrDefault();
+            restaCalculada = totalCalculado - presupuesto.Anticipo;
 
-            if (presupuesto.Resta.GetValueOrDefault() != restaCalculada)
+            if (presupuesto.Resta != restaCalculada)
             {
                 return false;
             }

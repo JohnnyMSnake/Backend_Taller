@@ -7,25 +7,25 @@ namespace Backend_Taller.Models
         public int PresupuestosId { get; set; }
         public int OrdenServicioId { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? ManoObra { get; set; }
+        public decimal ManoObra { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? Refacciones { get; set; }
+        public decimal Refacciones { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? OtrosMateriales { get; set; }
+        public decimal OtrosMateriales { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? CargosAdicionales { get; set; }
+        public decimal CargosAdicionales { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? Seguro { get; set; }
+        public decimal Seguro { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? IVA { get; set; }
+        public decimal IVA { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? Subtotal { get; set; }
+        public decimal Subtotal { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? Total { get; set; }
+        public decimal Total { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? Anticipo { get; set; }
+        public decimal Anticipo { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal? Resta { get; set; }
+        public decimal Resta { get; set; }
         public OrdenServicio OrdenServicio { get; set; }
     }
 }
