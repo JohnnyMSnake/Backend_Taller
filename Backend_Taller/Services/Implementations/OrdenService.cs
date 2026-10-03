@@ -1,5 +1,6 @@
-﻿using Backend_Taller.DTOs;
+using Backend_Taller.DTOs;
 using Backend_Taller.Models;
+using Backend_Taller.Repository.Interfaces;
 using Backend_Taller.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,58 +9,22 @@ namespace Backend_Taller.Services.Implementations
     public class OrdenService : IOrdenService
     {
         private readonly IPresupuestoService _presupuestoService;
-        private readonly TallerDbContext _context;
-        public OrdenService(TallerDbContext context, IPresupuestoService presupuestoSevice) 
+        private readonly IOrdenRepository _ordenRepository;
+
+        public OrdenService(IOrdenRepository ordenRepository, IPresupuestoService presupuestoService) 
         { 
-            _presupuestoService = presupuestoSevice;
-            _context = context;
+            _presupuestoService = presupuestoService;
+            _ordenRepository = ordenRepository;
         }
 
         public async Task<List<OrdenServicio>> BuscarOrden(int? ordenServicioId, string? nombre, string? telefono, string? rfcFisico, string? placas, string? numeroSerie)
         {
-
-            var query = _context.OrdenesServicio.AsQueryable();
-
-            query = query.Include(v => v.Vehiculo)
-                         .ThenInclude(m => m.Marca)
-                         .Include(c => c.Cliente)
-                         .Include(rfc => rfc.RfcMoral)
-                         .Include(p => p.Presupuesto)
-                         .Include(s => s.Servicios);
-
-            if (ordenServicioId.HasValue && ordenServicioId > 0)
-            {
-                query = query.Where(id => id.OrdenServicioId == ordenServicioId);
-            }
-            if (!string.IsNullOrWhiteSpace(nombre))
-            {
-                query = query.Where(n => n.Cliente.Nombre.StartsWith(nombre));
-            }
-            if (!string.IsNullOrWhiteSpace(telefono))
-            {
-                query = query.Where(n => n.Cliente.Telefono.Contains(telefono));
-            }
-            if (!string.IsNullOrWhiteSpace(rfcFisico))
-            {
-                query = query.Where(rfc => rfc.Cliente.RfcFisico.Contains(rfcFisico));
-            }
-            if (!string.IsNullOrWhiteSpace(placas))
-            {
-                query = query.Where(p => p.Vehiculo.Placas.StartsWith(placas));
-            }
-            if (!string.IsNullOrWhiteSpace(numeroSerie))
-            {
-                query = query.Where(ns => ns.Vehiculo.NumeroSerie.Contains(numeroSerie));
-            }
-
-            var ordenesServicio = await query.ToListAsync();
-
+            var ordenesServicio = await _ordenRepository.BuscarOrdenAsync(ordenServicioId, nombre, telefono, rfcFisico, placas, numeroSerie);
             return ordenesServicio;
         }
 
         public async Task<CrearOrdenServicioDTO> CrearOrden(CrearOrdenServicioDTO nuevaOrdenServicio)
         {
-            //Solo para verificar que si tenga los datos necesarios antes de proceder
             if (nuevaOrdenServicio.Cliente == null ||
                 nuevaOrdenServicio.Vehiculo == null ||
                 nuevaOrdenServicio.Presupuesto == null)
@@ -67,7 +32,7 @@ namespace Backend_Taller.Services.Implementations
                 throw new BadHttpRequestException("Alguno de los datos a subir no estan completos, favor de no mandar null ya sea el cliente, vehiculo o el presupuesto");
             }
 
-            using (var transaccion = _context.Database.BeginTransaction())
+            using (var transaccion = await _ordenRepository.BeginTransactionAsync())
             {
                 try
                 {
@@ -76,12 +41,12 @@ namespace Backend_Taller.Services.Implementations
                     RfcMoral? rfcMoral = null;
                     OrdenServicio? ordenServicio = null;
 
-                    //Primero buscara si el cliente ya existe
+                    // Buscar o crear cliente
                     if (nuevaOrdenServicio.Cliente.ClientesId > 0)
                     {
-                        cliente = await _context.Clientes.FindAsync(nuevaOrdenServicio.Cliente.ClientesId);
+                        cliente = await _ordenRepository.ObtenerClientePorIdAsync(nuevaOrdenServicio.Cliente.ClientesId);
                     }
-                    //este creara un nuevo cliente si no existe
+
                     if (cliente == null)
                     {
                         cliente = new Clientes
@@ -92,10 +57,8 @@ namespace Backend_Taller.Services.Implementations
                             Cp = nuevaOrdenServicio.Cliente.Cp,
                             Telefono = nuevaOrdenServicio.Cliente.Telefono
                         };
-                        await _context.Clientes.AddAsync(cliente);
-
+                        await _ordenRepository.AgregarClienteAsync(cliente);
                     }
-                    //si el cliente ya existe, actualizara su informacion
                     else
                     {
                         cliente.RfcFisico = nuevaOrdenServicio.Cliente.RfcFisico;
@@ -103,14 +66,14 @@ namespace Backend_Taller.Services.Implementations
                         cliente.Direccion = nuevaOrdenServicio.Cliente.Direccion;
                         cliente.Cp = nuevaOrdenServicio.Cliente.Cp;
                         cliente.Telefono = nuevaOrdenServicio.Cliente.Telefono;
-
                     }
-                    //Igual que con el usuario, primero buscara si el vehiculo ya existe
+
+                    // Buscar o crear vehículo
                     if (nuevaOrdenServicio.Vehiculo.VehiculosId > 0)
                     {
-                        vehiculo = await _context.Vehiculos.FindAsync(nuevaOrdenServicio.Vehiculo.VehiculosId);
+                        vehiculo = await _ordenRepository.ObtenerVehiculoPorIdAsync(nuevaOrdenServicio.Vehiculo.VehiculosId);
                     }
-                    //si no existe, creara uno nuevo
+
                     if (vehiculo == null)
                     {
                         vehiculo = new Vehiculos
@@ -123,9 +86,8 @@ namespace Backend_Taller.Services.Implementations
                             NumeroMotor = nuevaOrdenServicio.Vehiculo.NumeroMotor,
                             Color = nuevaOrdenServicio.Vehiculo.Color
                         };
-                        await _context.Vehiculos.AddAsync(vehiculo);
+                        await _ordenRepository.AgregarVehiculoAsync(vehiculo);
                     }
-                    //si ya existe, actualizara su informacion
                     else
                     {
                         vehiculo.NumeroSerie = nuevaOrdenServicio.Vehiculo.NumeroSerie;
@@ -135,16 +97,16 @@ namespace Backend_Taller.Services.Implementations
                         vehiculo.Modelo = nuevaOrdenServicio.Vehiculo.Modelo;
                         vehiculo.NumeroMotor = nuevaOrdenServicio.Vehiculo.NumeroMotor;
                         vehiculo.Color = nuevaOrdenServicio.Vehiculo.Color;
-
                     }
+
+                    // Buscar o crear RFC Moral
                     if (nuevaOrdenServicio.RfcMoral != null)
                     {
-                        //Finalmente, hara lo mismo para el RFC Moral
                         if (nuevaOrdenServicio.RfcMoral.RfcMoralId > 0)
                         {
-                            rfcMoral = await _context.RfcMorales.FindAsync(nuevaOrdenServicio.RfcMoral.RfcMoralId);
+                            rfcMoral = await _ordenRepository.ObtenerRfcMoralPorIdAsync(nuevaOrdenServicio.RfcMoral.RfcMoralId);
                         }
-                        //si no existe, creara uno nuevo
+
                         if (rfcMoral == null)
                         {
                             rfcMoral = new RfcMoral()
@@ -152,18 +114,16 @@ namespace Backend_Taller.Services.Implementations
                                 RfcMoralValue = nuevaOrdenServicio.RfcMoral.RfcMoralValue,
                                 Institucion = nuevaOrdenServicio.RfcMoral.Institucion
                             };
-                            await _context.RfcMorales.AddAsync(rfcMoral);
-
+                            await _ordenRepository.AgregarRfcMoralAsync(rfcMoral);
                         }
-                        //si ya existe, actualizara su informacion
                         else
                         {
                             rfcMoral.RfcMoralValue = nuevaOrdenServicio.RfcMoral.RfcMoralValue;
                             rfcMoral.Institucion = nuevaOrdenServicio.RfcMoral.Institucion;
                         }
-
                     }
 
+                    // Crear orden de servicio
                     ordenServicio = new OrdenServicio
                     {
                         Cliente = cliente,
@@ -185,8 +145,10 @@ namespace Backend_Taller.Services.Implementations
                         };
                         ordenServicio.Servicios.Add(nuevoServicio);
                     }
-                    _context.OrdenesServicio.Add(ordenServicio);
 
+                    await _ordenRepository.AgregarOrdenServicioAsync(ordenServicio);
+
+                    // Verificar presupuesto
                     var resultado = await _presupuestoService.VerificarPresupuesto(nuevaOrdenServicio.Presupuesto);
 
                     if (!resultado)
@@ -194,6 +156,7 @@ namespace Backend_Taller.Services.Implementations
                         throw new ArgumentException("Verificar el presupuesto, no coincide");
                     }
 
+                    // Crear presupuesto
                     var presupuesto = new Presupuestos()
                     {
                         ManoObra = nuevaOrdenServicio.Presupuesto.ManoObra,
@@ -209,12 +172,13 @@ namespace Backend_Taller.Services.Implementations
                         OrdenServicio = ordenServicio
                     };
 
-                    await _context.Presupuestos.AddAsync(presupuesto);
-                    await _context.SaveChangesAsync();
+                    await _ordenRepository.AgregarPresupuestoAsync(presupuesto);
+                    await _ordenRepository.GuardarCambiosAsync();
                     await transaccion.CommitAsync();
 
                     return nuevaOrdenServicio;
                 }
+                //NOTA: no se si esta parte deberia de moverla a repository porque tecnicamente es de EF y deberia de estar en repository, pero por el momento lo dejo aqui
                 catch (DbUpdateException ex)
                 {
                     await transaccion.RollbackAsync();

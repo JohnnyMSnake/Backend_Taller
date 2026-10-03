@@ -1,5 +1,7 @@
 using Backend_Taller;
 using Backend_Taller.Models;
+using Backend_Taller.Repository.Implementations;
+using Backend_Taller.Repository.Interfaces;
 using Backend_Taller.Services.Implementations;
 using Backend_Taller.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +16,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+//builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,6 +36,16 @@ builder.Services.AddScoped<IMarcaService, MarcaService>();
 builder.Services.AddScoped<IPresupuestoService, PresupuestoService>();
 builder.Services.AddScoped<IOrdenService, OrdenService>();
 
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();
+builder.Services.AddScoped<IRfcMoralRepository, RfcMoralRepository>();
+builder.Services.AddScoped<IIvaRepository, IvaRepository>();
+builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
+builder.Services.AddScoped<IPresupuestoRepository, PresupuestoRepository>();
+builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
+
+
+
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 builder.Services.AddProblemDetails();
@@ -43,7 +55,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    //app.MapOpenApi();
 
     app.UseSwagger();
     app.UseSwaggerUI();

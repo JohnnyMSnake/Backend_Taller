@@ -1,16 +1,16 @@
 ﻿using Backend_Taller.DTOs;
 using Backend_Taller.Models;
+using Backend_Taller.Repository.Interfaces;
 using Backend_Taller.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Taller.Services.Implementations
 {
     public class PresupuestoService : IPresupuestoService
     {
-        private readonly TallerDbContext _context;
-        public PresupuestoService(TallerDbContext context)
+        private readonly IPresupuestoRepository _presupuestoRepository;
+        public PresupuestoService(IPresupuestoRepository presupuestoRepository)
         {
-            _context = context;
+            _presupuestoRepository = presupuestoRepository;
         }
         public async Task<bool> VerificarPresupuesto(PresupuestosDTO presupuesto)
         {
@@ -30,7 +30,7 @@ namespace Backend_Taller.Services.Implementations
                 return false;
             }
 
-            var iva = await _context.Iva.SingleOrDefaultAsync();
+            var iva = await _presupuestoRepository.ObtenerIvaAsync();
 
             if (iva != null)
             {

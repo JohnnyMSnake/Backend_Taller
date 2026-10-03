@@ -1,31 +1,36 @@
 ﻿using Backend_Taller.DTOs;
 using Backend_Taller.Models;
+using Backend_Taller.Repository.Interfaces;
 using Backend_Taller.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Taller.Services.Implementations
 {
     public class IvaService : IIvaService
     {
-        private readonly TallerDbContext _context;
-        public IvaService(TallerDbContext context) 
+        private readonly IIvaRepository _ivaRepository;
+        public IvaService(IIvaRepository ivaRepository) 
         { 
-            _context = context;
+            _ivaRepository = ivaRepository;
         }
         public async Task<decimal> ModificarIva(IvaDTO nuevoIvaValue)
         {
-            var iva = await _context.Iva.SingleOrDefaultAsync();
-            iva.IvaValue = nuevoIvaValue.IvaValue;
-            await _context.SaveChangesAsync();
-            return iva.IvaValue;
+            var iva = await _ivaRepository.ObtenerIvaAsync();
+            if (iva != null)
+            {
+                iva.IvaValue = nuevoIvaValue.IvaValue;
+                await _ivaRepository.ActualizarIvaAsync(iva);
+                await _ivaRepository.GuardarCambiosAsync();
+                return iva.IvaValue;
+            }
+            return 0;
         }
 
         public async Task<decimal> ObtenerIvaValue()
         {
-            var iva = await _context.Iva.SingleOrDefaultAsync();
-            if(iva == null)
+            var iva = await _ivaRepository.ObtenerIvaAsync();
+            if (iva == null)
             {
-                //Tecnicamente nunca deberia de llegar aqui, pero por si al caso y evitar que haga cosas raras
+                // Tecnicamente nunca deberia de llegar aqui, pero por si al caso lo dejo en que devuelva 0, para que no rompa la aplicacion
                 return 0;
             }
             return iva.IvaValue;
