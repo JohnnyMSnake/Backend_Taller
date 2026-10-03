@@ -1,3 +1,4 @@
+using Backend_Taller.EFConfiguration;
 using Backend_Taller.Models;
 using Backend_Taller.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;

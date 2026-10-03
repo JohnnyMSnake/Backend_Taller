@@ -1,3 +1,4 @@
+using Backend_Taller.EFConfiguration;
 using Backend_Taller.Models;
 using Backend_Taller.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,15 @@ namespace Backend_Taller.Repository.Implementations
             var vehiculos = await query.ToListAsync();
 
             return vehiculos;
+        }
+
+        public async Task<Vehiculos> BuscarVehiculoByIdAsync(int id)
+        {
+            return await _context.Vehiculos.Include(m => m.Marca).FirstOrDefaultAsync(v => v.VehiculosId == id);
+        }
+        public async Task AgregarVehiculoAsync(Vehiculos vehiculo)
+        {
+            await _context.Vehiculos.AddAsync(vehiculo);
         }
     }
 }

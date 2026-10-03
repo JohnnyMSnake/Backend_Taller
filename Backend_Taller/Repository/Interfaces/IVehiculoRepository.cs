@@ -6,5 +6,7 @@ namespace Backend_Taller.Repository.Interfaces
     {
         Task<List<Vehiculos>> ObtenerVehiculosAsync();
         Task<List<Vehiculos>> BuscarVehiculosAsync(string? numeroSerie, string? placas, string? tipo, int? marcaId, string? modelo, string? numeroMotor, string? color);
+        Task<Vehiculos> BuscarVehiculoByIdAsync(int id);
+        Task AgregarVehiculoAsync(Vehiculos vehiculo);
     }
 }

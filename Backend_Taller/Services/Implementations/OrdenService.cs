@@ -11,11 +11,21 @@ namespace Backend_Taller.Services.Implementations
     {
         private readonly IPresupuestoService _presupuestoService;
         private readonly IOrdenRepository _ordenRepository;
+        private readonly IClienteService _clienteService;
+        private readonly IVehiculoService _vehiculoService;
+        private readonly IRfcMoralService _rfcMoralService;
 
-        public OrdenService(IOrdenRepository ordenRepository, IPresupuestoService presupuestoService) 
+        public OrdenService(IOrdenRepository ordenRepository, 
+                            IPresupuestoService presupuestoService, 
+                            IClienteService clienteService, 
+                            IVehiculoService vehiculoService,
+                            IRfcMoralService rfcMoralService) 
         { 
             _presupuestoService = presupuestoService;
             _ordenRepository = ordenRepository;
+            _clienteService = clienteService;
+            _vehiculoService = vehiculoService;
+            _rfcMoralService = rfcMoralService;
         }
 
         public async Task<List<OrdenServicio>> BuscarOrden(int? ordenServicioId, string? nombre, string? telefono, string? rfcFisico, string? placas, string? numeroSerie)
@@ -37,92 +47,17 @@ namespace Backend_Taller.Services.Implementations
             {
                 try
                 {
-                    Clientes? cliente = null;
-                    Vehiculos? vehiculo = null;
-                    RfcMoral? rfcMoral = null;
+                    
                     OrdenServicio? ordenServicio = null;
 
                     // Buscar o crear cliente
-                    if (nuevaOrdenServicio.Cliente.ClientesId > 0)
-                    {
-                        cliente = await _ordenRepository.ObtenerClientePorIdAsync(nuevaOrdenServicio.Cliente.ClientesId);
-                    }
-
-                    if (cliente == null)
-                    {
-                        cliente = new Clientes
-                        {
-                            RfcFisico = nuevaOrdenServicio.Cliente.RfcFisico,
-                            Nombre = nuevaOrdenServicio.Cliente.Nombre,
-                            Direccion = nuevaOrdenServicio.Cliente.Direccion,
-                            Cp = nuevaOrdenServicio.Cliente.Cp,
-                            Telefono = nuevaOrdenServicio.Cliente.Telefono
-                        };
-                        await _ordenRepository.AgregarClienteAsync(cliente);
-                    }
-                    else
-                    {
-                        cliente.RfcFisico = nuevaOrdenServicio.Cliente.RfcFisico;
-                        cliente.Nombre = nuevaOrdenServicio.Cliente.Nombre;
-                        cliente.Direccion = nuevaOrdenServicio.Cliente.Direccion;
-                        cliente.Cp = nuevaOrdenServicio.Cliente.Cp;
-                        cliente.Telefono = nuevaOrdenServicio.Cliente.Telefono;
-                    }
+                    var cliente = await _clienteService.ObtenerOCrearClienteAsync(nuevaOrdenServicio.Cliente);
 
                     // Buscar o crear vehículo
-                    if (nuevaOrdenServicio.Vehiculo.VehiculosId > 0)
-                    {
-                        vehiculo = await _ordenRepository.ObtenerVehiculoPorIdAsync(nuevaOrdenServicio.Vehiculo.VehiculosId);
-                    }
-
-                    if (vehiculo == null)
-                    {
-                        vehiculo = new Vehiculos
-                        {
-                            NumeroSerie = nuevaOrdenServicio.Vehiculo.NumeroSerie,
-                            Placas = nuevaOrdenServicio.Vehiculo.Placas,
-                            Tipo = nuevaOrdenServicio.Vehiculo.Tipo,
-                            MarcasId = nuevaOrdenServicio.Vehiculo.MarcasId,
-                            Modelo = nuevaOrdenServicio.Vehiculo.Modelo,
-                            NumeroMotor = nuevaOrdenServicio.Vehiculo.NumeroMotor,
-                            Color = nuevaOrdenServicio.Vehiculo.Color
-                        };
-                        await _ordenRepository.AgregarVehiculoAsync(vehiculo);
-                    }
-                    else
-                    {
-                        vehiculo.NumeroSerie = nuevaOrdenServicio.Vehiculo.NumeroSerie;
-                        vehiculo.Placas = nuevaOrdenServicio.Vehiculo.Placas;
-                        vehiculo.Tipo = nuevaOrdenServicio.Vehiculo.Tipo;
-                        vehiculo.MarcasId = nuevaOrdenServicio.Vehiculo.MarcasId;
-                        vehiculo.Modelo = nuevaOrdenServicio.Vehiculo.Modelo;
-                        vehiculo.NumeroMotor = nuevaOrdenServicio.Vehiculo.NumeroMotor;
-                        vehiculo.Color = nuevaOrdenServicio.Vehiculo.Color;
-                    }
+                    var vehiculo = await _vehiculoService.ObtenerOCrearVehiculoAsync(nuevaOrdenServicio.Vehiculo);
 
                     // Buscar o crear RFC Moral
-                    if (nuevaOrdenServicio.RfcMoral != null)
-                    {
-                        if (nuevaOrdenServicio.RfcMoral.RfcMoralId > 0)
-                        {
-                            rfcMoral = await _ordenRepository.ObtenerRfcMoralPorIdAsync(nuevaOrdenServicio.RfcMoral.RfcMoralId);
-                        }
-
-                        if (rfcMoral == null)
-                        {
-                            rfcMoral = new RfcMoral()
-                            {
-                                RfcMoralValue = nuevaOrdenServicio.RfcMoral.RfcMoralValue,
-                                Institucion = nuevaOrdenServicio.RfcMoral.Institucion
-                            };
-                            await _ordenRepository.AgregarRfcMoralAsync(rfcMoral);
-                        }
-                        else
-                        {
-                            rfcMoral.RfcMoralValue = nuevaOrdenServicio.RfcMoral.RfcMoralValue;
-                            rfcMoral.Institucion = nuevaOrdenServicio.RfcMoral.Institucion;
-                        }
-                    }
+                    var rfcMoral = await _rfcMoralService.ObtenerOCrearRfcMoral(nuevaOrdenServicio.RfcMoral);
 
                     // Crear orden de servicio
                     ordenServicio = new OrdenServicio

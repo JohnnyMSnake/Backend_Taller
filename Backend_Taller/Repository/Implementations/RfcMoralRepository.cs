@@ -1,3 +1,4 @@
+using Backend_Taller.EFConfiguration;
 using Backend_Taller.Models;
 using Backend_Taller.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,16 @@ namespace Backend_Taller.Repository.Implementations
 
             var rfcs = await query.ToListAsync();
             return rfcs;
+        }
+
+        public async Task<RfcMoral> BuscarRfcMoralByIdAsync(int id)
+        {
+            return await _context.RfcMorales.FirstOrDefaultAsync(r => r.RfcMoralId == id);
+        }
+
+        public async Task AgregarRfcMoralAsync(RfcMoral rfcMoral)
+        {
+            await _context.RfcMorales.AddAsync(rfcMoral);
         }
     }
 }

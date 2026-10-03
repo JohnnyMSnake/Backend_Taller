@@ -1,3 +1,4 @@
+using Backend_Taller.EFConfiguration;
 using Backend_Taller.Models;
 using Backend_Taller.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -55,11 +56,6 @@ namespace Backend_Taller.Repository.Implementations
             return ordenesServicio;
         }
 
-        public async Task<Clientes?> ObtenerClientePorIdAsync(int clienteId)
-        {
-            return await _context.Clientes.FindAsync(clienteId);
-        }
-
         public async Task<Vehiculos?> ObtenerVehiculoPorIdAsync(int vehiculoId)
         {
             return await _context.Vehiculos.FindAsync(vehiculoId);
@@ -68,11 +64,6 @@ namespace Backend_Taller.Repository.Implementations
         public async Task<RfcMoral?> ObtenerRfcMoralPorIdAsync(int rfcMoralId)
         {
             return await _context.RfcMorales.FindAsync(rfcMoralId);
-        }
-
-        public async Task AgregarClienteAsync(Clientes cliente)
-        {
-            await _context.Clientes.AddAsync(cliente);
         }
 
         public async Task AgregarVehiculoAsync(Vehiculos vehiculo)

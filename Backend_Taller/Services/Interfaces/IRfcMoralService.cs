@@ -1,4 +1,5 @@
-﻿using Backend_Taller.Models;
+﻿using Backend_Taller.DTOs;
+using Backend_Taller.Models;
 
 namespace Backend_Taller.Services.Interfaces
 {
@@ -7,5 +8,8 @@ namespace Backend_Taller.Services.Interfaces
         Task<List<RfcMoral>> ObtenerRfcMoral();
 
         Task<List<RfcMoral>> BuscarRfcMoral(string? rfcMoralValue, string? institucion);
+
+        Task<RfcMoral> ObtenerOCrearRfcMoral(RfcMoralDTO rfcMoralDTO);
+
     }
 }

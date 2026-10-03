@@ -10,6 +10,8 @@ namespace Backend_Taller.Models
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
+        public Guid RoleId { get; set; }
+        public Roles Role { get; set; }
 
     }
 }

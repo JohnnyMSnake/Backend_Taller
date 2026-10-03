@@ -1,4 +1,5 @@
-﻿using Backend_Taller.Models;
+﻿using Backend_Taller.DTOs;
+using Backend_Taller.Models;
 
 namespace Backend_Taller.Services.Interfaces
 {
@@ -14,5 +15,7 @@ namespace Backend_Taller.Services.Interfaces
             string? modelo,
             string? numeroMotor,
             string? color);
+
+        Task<Vehiculos> ObtenerOCrearVehiculoAsync(VehiculosDTO vehiculo);
     }
 }

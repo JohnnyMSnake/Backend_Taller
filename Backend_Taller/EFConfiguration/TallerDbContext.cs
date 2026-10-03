@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Backend_Taller.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Backend_Taller.Models
+namespace Backend_Taller.EFConfiguration
 {
     public class TallerDbContext : DbContext
     {

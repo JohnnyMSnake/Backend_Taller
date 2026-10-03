@@ -1,3 +1,4 @@
+using Backend_Taller.EFConfiguration;
 using Backend_Taller.Models;
 using Backend_Taller.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,16 @@ namespace Backend_Taller.Repository.Implementations
 
             var clientes = await query.ToListAsync();
             return clientes;
+        }
+
+        public async Task<Clientes> ObtenerClientePorIdAsync(int clienteId)
+        {
+            return await _context.Clientes.FirstOrDefaultAsync(c => c.ClientesId == clienteId);
+        }
+
+        public async Task AgregarClienteAsync(Clientes cliente)
+        {
+            await _context.Clientes.AddAsync(cliente);
         }
     }
 }

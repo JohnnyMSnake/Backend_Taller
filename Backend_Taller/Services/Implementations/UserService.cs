@@ -1,4 +1,5 @@
-﻿using Backend_Taller.Models;
+﻿using Backend_Taller.EFConfiguration;
+using Backend_Taller.Models;
 using Backend_Taller.Services.Interfaces;
 
 namespace Backend_Taller.Services.Implementations
