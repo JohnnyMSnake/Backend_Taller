@@ -1,7 +1,5 @@
 ﻿using Backend_Taller.DTOs;
-using Backend_Taller.Models;
 using Backend_Taller.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Taller.Controllers

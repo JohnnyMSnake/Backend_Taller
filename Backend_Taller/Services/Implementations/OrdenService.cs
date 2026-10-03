@@ -4,6 +4,7 @@ using Backend_Taller.Repository.Interfaces;
 using Backend_Taller.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Backend_Taller.Services.Implementations
 {
     public class OrdenService : IOrdenService
@@ -29,7 +30,7 @@ namespace Backend_Taller.Services.Implementations
                 nuevaOrdenServicio.Vehiculo == null ||
                 nuevaOrdenServicio.Presupuesto == null)
             {
-                throw new BadHttpRequestException("Alguno de los datos a subir no estan completos, favor de no mandar null ya sea el cliente, vehiculo o el presupuesto");
+                throw new ArgumentException("Alguno de los datos a subir no estan completos, favor de no mandar null ya sea el cliente, vehiculo o el presupuesto");
             }
 
             using (var transaccion = await _ordenRepository.BeginTransactionAsync())

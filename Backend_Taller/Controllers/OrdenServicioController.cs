@@ -1,9 +1,7 @@
 ﻿using Backend_Taller.DTOs;
-using Backend_Taller.Models;
 using Backend_Taller.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Backend_Taller.Controllers
 {
@@ -11,11 +9,9 @@ namespace Backend_Taller.Controllers
     [ApiController]
     public class OrdenServicioController : ControllerBase
     {
-        private readonly TallerDbContext _context;
         private readonly IOrdenService _ordenService;
-        public OrdenServicioController(TallerDbContext context, IOrdenService OrdenService)
-        {
-            _context = context;
+        public OrdenServicioController(IOrdenService OrdenService)
+        { 
             _ordenService = OrdenService;
         }
 
