@@ -2,8 +2,8 @@
 
 namespace Backend_Taller.Services.Interfaces
 {
-    public interface IJwtService
+    public interface IRoleService
     {
-        string GenerateToken(Users user);
+        Task<Roles> ObtenerRoleByName(string name);
     }
 }

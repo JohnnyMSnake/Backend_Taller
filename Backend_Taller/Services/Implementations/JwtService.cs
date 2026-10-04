@@ -14,7 +14,7 @@ namespace Backend_Taller.Services.Implementations
         {
             _configuration = configuration;
         }
-        public string GenerateToken(User user)
+        public string GenerateToken(Users user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -29,7 +29,7 @@ namespace Backend_Taller.Services.Implementations
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Double.Parse(_configuration["JWT:Duration"])),
+                expires: DateTime.Now.AddMinutes(Double.Parse(_configuration["JWT:DurationInMinutes"])),
                 signingCredentials: credentials
                 );
 

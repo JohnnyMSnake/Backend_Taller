@@ -2,10 +2,10 @@
 
 namespace Backend_Taller.Services.Interfaces
 {
-    public interface IHashPassword
+    public interface IHashPasswordService
     {
-        string hashPassword(string password);
-        bool verifyPassword(string password, string hashedPassword);
+        string HashPassword(string password);
+        bool VerifyPassword(string password, string hashedPassword);
 
     }
 }

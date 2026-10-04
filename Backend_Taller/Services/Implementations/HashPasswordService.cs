@@ -3,14 +3,14 @@ using BCrypt.Net;
 
 namespace Backend_Taller.Services.Implementations
 {
-    public class HashPasswordService : IHashPassword
+    public class HashPasswordService : IHashPasswordService
     {
-        public string hashPassword(string password)
+        public string HashPassword(string password)
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
 
-        public bool verifyPassword(string password, string hashedPassword)
+        public bool VerifyPassword(string password, string hashedPassword)
         {
             return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
         }

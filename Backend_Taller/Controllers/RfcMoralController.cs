@@ -1,11 +1,9 @@
-﻿using Backend_Taller.Models;
-using Backend_Taller.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Backend_Taller.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Taller.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class RfcMoralController : ControllerBase
     {

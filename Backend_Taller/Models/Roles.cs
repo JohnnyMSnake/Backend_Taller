@@ -2,8 +2,8 @@
 {
     public class Roles
     {
-        public Guid RoleId { get; set; } = Guid.NewGuid();
+        public Guid RolesId { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
-        public ICollection<User> User { get; set; } = new List<User>();
+        public ICollection<Users> User { get; set; } = new List<Users>();
     }
 }

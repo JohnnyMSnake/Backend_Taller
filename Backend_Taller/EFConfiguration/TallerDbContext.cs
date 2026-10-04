@@ -16,6 +16,7 @@ namespace Backend_Taller.EFConfiguration
         public DbSet<Presupuestos> Presupuestos { get; set; }
         public DbSet<Marcas> Marcas { get; set; }
         public DbSet<Iva> Iva { get; set; }
-        public DbSet<User> User { get; set; }
+        public DbSet<Users> Users { get; set; }
+        public DbSet<Roles> Roles { get; set; }
     }
 }
