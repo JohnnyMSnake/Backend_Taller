@@ -11,7 +11,7 @@ namespace Backend_Taller
             if (exception is BadHttpRequestException)
             {
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
+                await httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
                 {
                     Status = StatusCodes.Status400BadRequest,
                     Title = "Bad Request",
@@ -22,7 +22,7 @@ namespace Backend_Taller
             if (exception is ArgumentException)
             {
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
+                await httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
                 {
                     Status = StatusCodes.Status400BadRequest,
                     Title = "Bad Request",
@@ -33,7 +33,7 @@ namespace Backend_Taller
             if(exception is DbUpdateException)
             {
                 httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
-                httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
+                await httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
                 {
                     Status = StatusCodes.Status409Conflict,
                     Title = "Database Error",
@@ -44,7 +44,7 @@ namespace Backend_Taller
             if(exception is Exception)
             {
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
+                await httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
                 {
                     Status = StatusCodes.Status500InternalServerError,
                     Title = "Internal Server Error",
