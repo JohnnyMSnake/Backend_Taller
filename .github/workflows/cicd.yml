@@ -1,0 +1,28 @@
+name: CI/CD
+
+on:
+
+    push:
+        branches: [ "main", "Branch_Desarrollo" ]
+    pull_request:
+        branches: [ "main", "Branch_Desarrollo" ]
+    workflow_dispatch:
+
+
+jobs:
+    CI:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v4
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: 10.0.x
+        - name: Descargar dependencias
+          run: dotnet restore
+        - name: Build
+          run: dotnet build --no-restore
+        - name: Correr tests
+          run: dotnet test --no-build
